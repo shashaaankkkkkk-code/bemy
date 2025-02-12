@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine! 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ffe6f0, #ffb3d9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #ff4d94;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            animation: bounce 1s infinite;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .yes-btn, .no-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .yes-btn {
+            background: #ff80bf;
+            color: white;
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+            background: #ff4d94;
+        }
+
+        .no-btn {
+            background: #ffb3d9;
+            color: #ff4d94;
+        }
+
+        .meme {
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .dancing-emoji {
+            font-size: 40px;
+            animation: dance 0.5s infinite;
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes dance {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .yes-btn, .no-btn {
+                padding: 12px 30px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Will you be my Valentine? 🥺</h1>
+        <img src="/api/placeholder/300/200" alt="Cute Valentine Meme" class="meme">
+        <div class="buttons">
+            <button class="yes-btn" onclick="sayYes()">Yes! 💖</button>
+            <button class="no-btn" onmouseover="runAway(this)" onclick="preventNo()">No</button>
+        </div>
+        <div id="celebration" style="display: none; margin-top: 20px;">
+            <span class="dancing-emoji">💃</span>
+            <span class="dancing-emoji">🕺</span>
+            <span class="dancing-emoji">💖</span>
+            <span class="dancing-emoji">🎉</span>
+            <p style="font-size: 1.5em; color: #ff4d94; margin-top: 20px;">
+                Yaaaaay! You're the best! 💕
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let noCount = 0;
+        const maxNo = 5;
+        const phrases = [
+            "Are you sure? 🥺",
+            "Pretty please? 💝",
+            "Don't be like that! 🥰",
+            "Give love a chance! 💕",
+            "Last chance! 💖"
+        ];
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💝';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animation = `float ${Math.random() * 2 + 2}s linear forwards`;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        function runAway(btn) {
+            const container = document.querySelector('.container');
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = btn.getBoundingClientRect();
+
+            const maxX = containerRect.width - btnRect.width;
+            const maxY = containerRect.height - btnRect.height;
+
+            btn.style.position = 'absolute';
+            btn.style.left = Math.random() * maxX + 'px';
+            btn.style.top = Math.random() * maxY + 'px';
+
+            if (noCount < maxNo) {
+                btn.textContent = phrases[noCount] || "Please? 🥺";
+                noCount++;
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        function preventNo() {
+            return false;
+        }
+
+        function sayYes() {
+            document.querySelector('.buttons').style.display = 'none';
+            document.querySelector('#celebration').style.display = 'block';
+            document.querySelector('.meme').style.display = 'none';
+            
+            // Start continuous heart creation
+            setInterval(createHeart, 300);
+
+            // Make title dance
+            document.querySelector('h1').textContent = "WOOHOO! YOU SAID YES! 🎉";
+            
+            // Add more dancing emojis
+            const celebration = document.querySelector('#celebration');
+            const emojis = ['💝', '🎉', '💖', '✨', '💕'];
+            for (let i = 0; i < 10; i++) {
+                const span = document.createElement('span');
+                span.className = 'dancing-emoji';
+                span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                celebration.appendChild(span);
+            }
+        }
+
+        // Create initial floating hearts
+        setInterval(createHeart, 1000);
+    </script>
+</body>
+</html>
